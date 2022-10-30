@@ -1,7 +1,6 @@
 package Library_API;
 
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import files.Payload;
@@ -14,7 +13,7 @@ import io.restassured.path.json.JsonPath;
 public class IPLTeam {
 	
 	@Test(priority=1)
-	public void addBook(String isbn,String aisle)
+	public void iplTeamSelection()
 	{
 		
 		RestAssured.baseURI="";
@@ -36,6 +35,29 @@ public class IPLTeam {
 		
 		Assert.assertEquals(countForeign,4);
 		
+	}
+	
+	@Test(priority=2)
+	public void findWicketKeeper()
+	{
+		RestAssured.baseURI="";
+		String keeperResponse=given()
+				.body(Payload.payloadAPI()).when().get()
+			    .then().log().all().extract().response().asString();
+
+		       JsonPath js=Payload.rawtoJson(keeperResponse);
+			   int keeperCount=js.getInt("player.role");
+
+				for(int i=0; i<=keeperCount; i++)
+				{
+				   if(js.getString("player.role").equalsIgnoreCase("Wicket-keeper"))
+				    {
+				      System.out.println("Wicket-keeper found");
+				     break;
+				     }
+				}
+
+				Assert.assertEquals(keeperCount,"Wicket-keeper");
 	}
 	
 }
